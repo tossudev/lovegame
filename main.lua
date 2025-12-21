@@ -6,24 +6,24 @@ local size = 1.0
 local time = 0.0
 local rotation = 0.0
 
-local elements = {
+local buttonTexts = {
     "GAME TITLE",
     "PLAY",
     "QUIT",
 }
-local textElements = {}
+local buttons = {}
 
 
 function love.load()
+    print("Test")
     width = love.graphics.getWidth()
     height = love.graphics.getHeight()
 
     font = love.graphics.newFont("assets/Lexend.ttf", 18)
-    for _i=1,#elements do
-        local newText = love.graphics.newText(font, elements[_i])
-        table.insert(textElements, newText)
+    for _i=1,#buttonTexts do
+        local newText = love.graphics.newText(font, buttonTexts[_i])
+        createButton(newText)
     end
-
 end
 
 
@@ -35,11 +35,66 @@ function love.update(dt)
 end
 
 
-function love.draw()
-    for _i,textElement in ipairs(textElements) do
-        local x, y = width/2.0, height/#textElements * _i - (height/#textElements/2.0)
-        
-        love.graphics.draw(textElement, x, y, rotation, size, size, textElement:getWidth()/2.0, textElement:getHeight()/2.0)
+function love.mousereleased()
+    if isMouseOnButton(buttons[2]) then
+        print("Pressed Play!")
     end
-
 end
+
+
+function love.draw()
+    for _i,button in ipairs(buttons) do
+        local x, y = width/2.0, height/#buttons * _i - (height/#buttons/2.0)
+        
+        button.x = x
+        button.y = y
+
+        button.w = button.text:getWidth()
+        button.h = button.text:getHeight()
+        
+        local size_mod = 1.0
+
+        if isMouseOnButton(button) then
+            size_mod = 2.0
+        end
+        
+        button.size = lerp(button.size, size * size_mod, 0.5)
+
+        love.graphics.draw(
+            button.text,
+            button.x,
+            button.y,
+            rotation,
+            button.size,
+            button.size,
+            button.w/2.0,
+            button.h/2.0
+        )
+    end
+end
+
+
+function createButton(text)
+    local button = {}
+    button.text = text
+    button.x = 0
+    button.y = 0
+    button.w = 512
+    button.h = 32
+    button.size = 1.0
+
+    table.insert(buttons, button)
+end
+
+
+function isMouseOnButton(button)
+    local offset_x = button.x - (button.w/2.0)
+    local offset_y = button.y - (button.h/2.0)
+
+    return love.mouse.getX() >= offset_x
+    and love.mouse.getX() < offset_x + button.w
+    and love.mouse.getY() >= offset_y
+    and love.mouse.getY() < offset_y + button.h
+end
+
+function lerp(a,b,t) return (1-t)*a + t*b end
