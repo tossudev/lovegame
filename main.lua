@@ -13,13 +13,19 @@ local buttonTexts = {
 }
 local buttons = {}
 
+-- spring test
+local rigidness = 0.1
+local damping = 0.2
+local velocity = 0.0
+local spring_destination = 1.0
+
 
 function love.load()
     print("Test")
     width = love.graphics.getWidth()
     height = love.graphics.getHeight()
 
-    font = love.graphics.newFont("assets/Lexend.ttf", 18)
+    font = love.graphics.newFont("assets/Lexend.ttf", 64)
     for _i=1,#buttonTexts do
         local newText = love.graphics.newText(font, buttonTexts[_i])
         createButton(newText)
@@ -30,8 +36,15 @@ end
 function love.update(dt)
     time = time + dt
 
-    size = (math.cos(time) + 8.0)/8.0
-    rotation = (math.cos(time*2.0))/8.0
+    size = (math.cos(time) + 20.0)/20.0
+    rotation = (math.cos(time*2.0))/12.0
+end
+
+
+function love.mousepressed()
+    if isMouseOnButton(buttons[2]) then
+        buttons[2].size = 0.5
+    end
 end
 
 
@@ -51,14 +64,13 @@ function love.draw()
 
         button.w = button.text:getWidth()
         button.h = button.text:getHeight()
-        
-        local size_mod = 1.0
 
         if isMouseOnButton(button) then
-            size_mod = 2.0
+            print(button)
+            button.size = 1.5
+        else
+            spring(button)
         end
-        
-        button.size = lerp(button.size, size * size_mod, 0.5)
 
         love.graphics.draw(
             button.text,
@@ -98,3 +110,15 @@ function isMouseOnButton(button)
 end
 
 function lerp(a,b,t) return (1-t)*a + t*b end
+
+function spring(button)
+    local distance_to_dest = button.size - spring_destination
+    local loss = damping * velocity
+
+    -- hooke's law
+    local force = -rigidness * distance_to_dest - loss
+
+    velocity = velocity + force
+    button.size = button.size + velocity
+
+end
