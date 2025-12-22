@@ -7,6 +7,7 @@ local buttonTexts = {
     "QUIT",
 }
 local button
+local buttons = {}
 
 
 function love.load()
@@ -16,30 +17,29 @@ function love.load()
     width = love.graphics.getWidth()
     height = love.graphics.getHeight()
 
-    font = love.graphics.newFont("assets/Lexend.ttf", 64)
-    -- for _i=1,#buttonTexts do
-    -- local newText = love.graphics.newText(font, buttonTexts[_i])
-    button = Button(400, 300)
-    -- end
+    local newButton = Button(400, 300, "text test")
+    local newButton2 = Button(400, 400, "text test2")
+    table.insert(buttons, newButton)
+    table.insert(buttons, newButton2)
 end
 
 
 function love.update(dt)
-    -- for _i,button in ipairs(buttons) do
-    button.update(dt)
-    -- end
+    for _i,_button in ipairs(buttons) do
+        _button:update(dt)
+    end
 end
 
 
 function love.draw()
-    -- for _i,button in ipairs(buttons) do
-    local x, y = width/2.0, height/2.0
+    for _i,_button in ipairs(buttons) do
+        local x, y = width/2.0, height/2.0
     
     -- button.w = button.text:getWidth()
     -- button.h = button.text:getHeight()
 
-    button:draw()
-    -- end
+        _button:draw()
+    end
 end
 
 function lerp(a,b,t) return (1-t)*a + t*b end
