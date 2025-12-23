@@ -2,8 +2,6 @@ Button = Object:extend()
 
 local rigidness = 0.1
 local damping = 0.2
-local velocity = 0.0
-local spring_destination = 1.0
 
 
 function Button.load()
@@ -11,16 +9,20 @@ function Button.load()
 end
 
 
-function Button:new(_x, _y, _text, _animOffset)
+function Button:new(_x, _y, _buttonValues, _animOffset, _camera)
     self.x, self.y = _x, _y
     self.size = 1.0
     self.velocity = 0.0
     self.rotation = 0.0
     self.time = 0.0
     self.animOffset = _animOffset
+    self.shaking = false
+    self.shakeFrames = 0
+    self.camera = _camera
+    self.callFunction = _buttonValues[2]
 
     local font = love.graphics.newFont("assets/Lexend.ttf", 48)
-    local newText = love.graphics.newText(font, _text)
+    local newText = love.graphics.newText(font, _buttonValues[1])
     self.text = newText
 
     self.w = self.text:getWidth()
@@ -75,7 +77,13 @@ end
 
 function Button:mousereleased()
     if self:isMouseOnButton() then
+        self.camera:shake()
         print("Pressed Button!")
+
+        -- idk this seems a little scuffed but it works
+        if self.callFunction ~= nil then
+            self.callFunction()
+        end
     end
 end
 

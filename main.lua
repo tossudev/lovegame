@@ -1,27 +1,33 @@
 local font
 local width, height
 
-local buttonTexts = {
-    "Awesome game",
-    "Play",
-    "Settings",
-    "Quit",
-}
 local button
 local buttons = {}
+local camera
 
 
 function love.load()
     Object = require "classic"
     require "button"
+    require "camera"
+
+    camera = Camera()
 
     width = love.graphics.getWidth()
     height = love.graphics.getHeight()
 
-    for _i,buttonText in ipairs(buttonTexts) do
+    local buttonTexts = {
+        {"making love", nil},
+        {"Play", nil},
+        {"Quit", pressedQuit},
+    }
+
+    for _i,buttonValues in ipairs(buttonTexts) do
+        print(buttonValues[1])
+        print(buttonValues[2])
         local animOffset = 0.2 * _i
         -- scuffed positioning fix immediate !!
-        local newButton = Button(400, 150 * _i - 75, buttonText, animOffset)
+        local newButton = Button(400, 150 * _i - 75, buttonValues, animOffset, camera)
         table.insert(buttons, newButton)
     end
 end
@@ -35,6 +41,8 @@ end
 
 
 function love.draw()
+    camera:draw()
+
     for _i,_button in ipairs(buttons) do
         local x, y = width/2.0, height/2.0
     
@@ -61,3 +69,8 @@ end
 
 
 function lerp(a,b,t) return (1-t)*a + t*b end
+
+
+function pressedQuit()
+    love.event.quit()
+end
