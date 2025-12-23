@@ -9,7 +9,7 @@ function SceneManager:new()
     require "game"
 
     self.camera = Camera()
-    self.currentScene = Menu()
+    self:changeScene("menu")
 end
 
 
