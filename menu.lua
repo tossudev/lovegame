@@ -2,7 +2,6 @@ Menu = Object:extend()
 
 
 function Menu:new()
-    Object = require "classic"
     require "button"
     require "camera"
     require "main"

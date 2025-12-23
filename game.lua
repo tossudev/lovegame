@@ -2,7 +2,6 @@ Game = Object:extend()
 
 
 function Game:new()
-    Object = require "classic"
 end
 
 

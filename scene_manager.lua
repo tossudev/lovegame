@@ -3,7 +3,6 @@ SceneManager = Object:extend()
 
 function SceneManager:new()
     S = self
-    Object = require "classic"
     require "camera"
     require "menu"
     require "game"
