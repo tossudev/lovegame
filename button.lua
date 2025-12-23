@@ -5,47 +5,41 @@ local damping = 0.2
 local velocity = 0.0
 local spring_destination = 1.0
 
-local size = 1.0
-local spring_size = 1.0
-local time = 0.0
-local rotation = 0.0
-local x = 256.0
-local y = 256.0
-local w = 128.0
-local h = 128.0
-local text
-
 
 function Button.load()
     Object = require "classic"
 end
 
 
-function Button:new(_x, _y, _text)
+function Button:new(_x, _y, _text, _animOffset)
     self.x, self.y = _x, _y
     self.size = 1.0
-    self.w = 256.0
-    self.h = 128.0
+    self.velocity = 0.0
+    self.rotation = 0.0
+    self.time = 0.0
+    self.animOffset = _animOffset
 
-    local font = love.graphics.newFont("assets/Lexend.ttf", 64)
+    local font = love.graphics.newFont("assets/Lexend.ttf", 48)
     local newText = love.graphics.newText(font, _text)
     self.text = newText
+
+    self.w = self.text:getWidth()
+    self.h = self.text:getHeight()
 end
 
 
 function Button:update(dt)
-    self.time = time + dt
+    self.time = self.time + dt
 
-    -- size = (math.cos(time) + 20.0)/20.0
-    rotation = (math.cos(time*2.0))/12.0
+    self.rotation = (math.cos((self.time+self.animOffset)*2.0))/12.0
 
-    if Button:isMouseOnButton() then
-        spring_destination = 1.5
+    if self:isMouseOnButton() then
+        self.spring_destination = 1.5
     else
-        spring_destination = 1.0
+        self.spring_destination = (math.cos(self.time + self.animOffset) + 8.0)/8.0
     end
 
-    Button:spring()
+    self:spring()
 end
 
 
@@ -54,47 +48,56 @@ function Button:draw()
         self.text,
         self.x,
         self.y,
-        0.0,
+        self.rotation,
         self.size,
         self.size,
         self.w/2.0,
         self.h/2.0
     )
+
+    -- draw bounding box for debugging
+    -- love.graphics.rectangle(
+    --     "line",
+    --     self.x - self.w/2.0,
+    --     self.y - self.h/2.0,
+    --     self.w,
+    --     self.h
+    -- )
 end
 
 
-function love.mousepressed()
-    if Button:isMouseOnButton() then
-        spring_destination = 0.5
+function Button:mousepressed()
+    if self:isMouseOnButton() then
+        self.spring_destination = 0.5
     end
 end
 
 
-function love.mousereleased()
-    if Button:isMouseOnButton() then
-        print("Pressed Play!")
+function Button:mousereleased()
+    if self:isMouseOnButton() then
+        print("Pressed Button!")
     end
 end
 
 
 function Button:spring()
-    local distance_to_dest = size - spring_destination
-    local loss = damping * velocity
+    local distance_to_dest = self.size - self.spring_destination
+    local loss = damping * self.velocity
 
     -- hooke's law
     local force = -rigidness * distance_to_dest - loss
 
-    velocity = velocity + force
-    self.size = size + velocity
+    self.velocity = self.velocity + force
+    self.size = self.size + self.velocity
 end
 
 
 function Button:isMouseOnButton()
-    local offset_x = x - (w/2.0)
-    local offset_y = y - (h/2.0)
+    local offset_x = self.x - (self.w/2.0)
+    local offset_y = self.y - (self.h/2.0)
 
     return love.mouse.getX() >= offset_x
-    and love.mouse.getX() < offset_x + w
+    and love.mouse.getX() < offset_x + self.w
     and love.mouse.getY() >= offset_y
-    and love.mouse.getY() < offset_y + h
+    and love.mouse.getY() < offset_y + self.h
 end

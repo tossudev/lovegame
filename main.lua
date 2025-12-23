@@ -2,9 +2,10 @@ local font
 local width, height
 
 local buttonTexts = {
-    "GAME TITLE",
-    "PLAY",
-    "QUIT",
+    "Awesome game",
+    "Play",
+    "Settings",
+    "Quit",
 }
 local button
 local buttons = {}
@@ -17,10 +18,12 @@ function love.load()
     width = love.graphics.getWidth()
     height = love.graphics.getHeight()
 
-    local newButton = Button(400, 300, "text test")
-    local newButton2 = Button(400, 400, "text test2")
-    table.insert(buttons, newButton)
-    table.insert(buttons, newButton2)
+    for _i,buttonText in ipairs(buttonTexts) do
+        local animOffset = 0.2 * _i
+        -- scuffed positioning fix immediate !!
+        local newButton = Button(400, 150 * _i - 75, buttonText, animOffset)
+        table.insert(buttons, newButton)
+    end
 end
 
 
@@ -41,5 +44,20 @@ function love.draw()
         _button:draw()
     end
 end
+
+
+function love.mousepressed()
+    for _i,_button in ipairs(buttons) do
+        _button:mousepressed()
+    end
+end
+
+
+function love.mousereleased()
+    for _i,_button in ipairs(buttons) do
+        _button:mousereleased()
+    end
+end
+
 
 function lerp(a,b,t) return (1-t)*a + t*b end
