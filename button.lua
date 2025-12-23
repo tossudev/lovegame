@@ -78,7 +78,7 @@ end
 function Button:mousereleased()
     if self:isMouseOnButton() then
         self.camera:shake()
-        print("Pressed Button!")
+        -- print("Pressed Button!")
 
         -- idk this seems a little scuffed but it works
         if self.callFunction ~= nil then
