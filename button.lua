@@ -1,6 +1,6 @@
 Button = Object:extend()
 
-local push = require "lib.push"
+local font = love.graphics.newFont("assets/DigitalDiscoOutline.ttf", 16)
 
 local rigidness = 0.1
 local damping = 0.2
@@ -18,8 +18,7 @@ function Button:new(_x, _y, _buttonValues, _animOffset, _camera)
     self.camera = _camera
     self.callFunction = _buttonValues[2]
 
-    local font = love.graphics.newFont("assets/Lexend.ttf", 16)
-    local newText = love.graphics.newText(font, _buttonValues[1])
+    local newText = love.graphics.newText(font, {{0, 0, 0}, _buttonValues[1]})
     self.text = newText
 
     self.w = self.text:getWidth()
@@ -98,13 +97,14 @@ end
 
 
 function Button:isMouseOnButton()
-    local mousePosX, mousePosY = push:toGame(love.mouse.getX(), love.mouse.getY())
+    -- returns scaled pixels
+    local mousePosX, mousePosY = love.mouse.getX(), love.mouse.getY()
 
-    local offset_x = self.x - (self.w/2.0)
-    local offset_y = self.y - (self.h/2.0)
+    local offset_x = (self.x - (self.w/2.0))*PixelRatio
+    local offset_y = (self.y - (self.h/2.0))*PixelRatio
 
     return mousePosX >= offset_x
-    and mousePosX < offset_x + self.w
+    and mousePosX < offset_x + self.w*PixelRatio
     and mousePosY >= offset_y
-    and mousePosY < offset_y + self.h
+    and mousePosY < offset_y + self.h*PixelRatio
 end

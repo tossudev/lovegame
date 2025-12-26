@@ -28,6 +28,7 @@ end
 
 function Menu:draw()
     self.camera:draw()
+    love.graphics.draw(self.backgroundImage)
 
     for _i,_button in ipairs(self.buttons) do
         _button:draw()
