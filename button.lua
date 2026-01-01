@@ -54,13 +54,13 @@ function Button:draw()
     )
 
     -- draw bounding box for debugging
-    love.graphics.rectangle(
-        "line",
-        self.x - self.w/2.0,
-        self.y - self.h/2.0,
-        self.w,
-        self.h
-    )
+    -- love.graphics.rectangle(
+    --     "line",
+    --     self.x - self.w/2.0,
+    --     self.y - self.h/2.0,
+    --     self.w,
+    --     self.h
+    -- )
 end
 
 

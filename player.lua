@@ -14,6 +14,15 @@ function Player:new()
     self.angleTarget = 0.0
     self.angle = 0.0
     self.trailLines = {}
+    self.trailHue = 0.0
+
+    love.graphics.setLineWidth(8)
+    love.graphics.setLineStyle("smooth")
+end
+
+
+function Player:update(dt)
+    self.trailHue = self.trailHue + dt
 end
 
 
@@ -23,22 +32,29 @@ function Player:draw(speed)
 
     self:updateSprite()
     
+    love.graphics.setColor(HSV(self.trailHue, 0.5, 1.0))
     if #self.trailLines > 2 then
-        for _, trailPos in ipairs(self.trailLines) do
-            trailPos = trailPos - speed
+        for _i, trailPos in ipairs(self.trailLines) do
+            if _i % 2 == 0 then
+                self.trailLines[_i] = trailPos - speed
+            end
         end
+
+        self.trailLines[#self.trailLines - 1] = mouseX
+        self.trailLines[#self.trailLines] = mouseY
         love.graphics.line(self.trailLines)
     end
-
-
-    if #self.trailLines > 60 then
+    
+    
+    if #self.trailLines > 360 then
         table.remove(self.trailLines, 1)
         table.remove(self.trailLines, 1)
     end
-
+    
     table.insert(self.trailLines, mouseX)
     table.insert(self.trailLines, mouseY)
-
+    
+    love.graphics.setColor(1, 1, 1, 1)
     love.graphics.draw(
         Tileset,
         tPlayer,

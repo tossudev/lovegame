@@ -30,6 +30,7 @@ function Game:update(dt)
         self.speed = 1.0
     end
 
+    player:update(dt)
 end
 
 
