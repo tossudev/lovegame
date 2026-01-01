@@ -1,10 +1,10 @@
 local camera
 local sceneManager
 
-local gameWidth, gameHeight = 320, 180 --fixed game resolution
+GameWidth, GameHeight = 320, 180 --fixed game resolution
 local windowWidth, windowHeight = love.window.getDesktopDimensions()
 windowWidth, windowHeight = windowWidth*.7, windowHeight*.7 --make the window a bit smaller than the screen itself
-PixelRatio = windowWidth/gameWidth
+PixelRatio = windowWidth/GameWidth
 PI = 3.14159
 
 

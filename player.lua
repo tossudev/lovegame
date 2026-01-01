@@ -5,7 +5,6 @@ local tPlayer = love.graphics.newQuad(160, 80, size, size, Tileset)
 local playerRotationDamp = 30.0 -- mouse relative x pixels per frame / this value
 
 
-
 function Player:new()
     require "lib/math"
 
@@ -13,53 +12,78 @@ function Player:new()
     self.previousMouseY = 0.0
     self.angleTarget = 0.0
     self.angle = 0.0
-    self.trailLines = {}
+    self.trailLinesL = {}
+    self.trailLinesR = {}
     self.trailHue = 0.0
+    self.collider = {0, 0, size, size}
+    self.mouseX = 0.0
+    self.mouseY = 0.0
 
-    love.graphics.setLineWidth(8)
+    love.graphics.setLineWidth(4)
     love.graphics.setLineStyle("smooth")
 end
 
 
 function Player:update(dt)
+    self.mouseX = love.mouse.getX()/PixelRatio
+    self.mouseY = love.mouse.getY()/PixelRatio
+    self.collider[1] = self.mouseX - size/2
+    self.collider[2] = self.mouseY - size/2
+
     self.trailHue = self.trailHue + dt
 end
 
 
 function Player:draw(speed)
-    local mouseX = love.mouse.getX()/PixelRatio
-    local mouseY = love.mouse.getY()/PixelRatio
-
     self:updateSprite()
     
-    love.graphics.setColor(HSV(self.trailHue, 0.5, 1.0))
-    if #self.trailLines > 2 then
-        for _i, trailPos in ipairs(self.trailLines) do
+    if #self.trailLinesL > 2 then
+        for _i, trailPos in ipairs(self.trailLinesL) do
             if _i % 2 == 0 then
-                self.trailLines[_i] = trailPos - speed
+                self.trailLinesL[_i] = trailPos - speed
             end
         end
+        for _i, trailPos in ipairs(self.trailLinesR) do
+            if _i % 2 == 0 then
+                self.trailLinesR[_i] = trailPos - speed
+            end
+        end
+        self.trailLinesL[#self.trailLinesL - 1] = self.mouseX - 3
+        self.trailLinesL[#self.trailLinesL] = self.mouseY
+        
+        self.trailLinesR[#self.trailLinesR - 1] = self.mouseX + 3
+        self.trailLinesR[#self.trailLinesR] = self.mouseY
+        
+        if speed > 5 then
+            love.graphics.setColor(HSV(self.trailHue, 0.5, 1.0))
+        else
+            love.graphics.setColor(love.math.colorFromBytes(183, 210, 235))
+        end
 
-        self.trailLines[#self.trailLines - 1] = mouseX
-        self.trailLines[#self.trailLines] = mouseY
-        love.graphics.line(self.trailLines)
+        love.graphics.line(self.trailLinesL)
+        love.graphics.line(self.trailLinesR)
     end
     
     
-    if #self.trailLines > 360 then
-        table.remove(self.trailLines, 1)
-        table.remove(self.trailLines, 1)
+    if #self.trailLinesL > 360 then
+        table.remove(self.trailLinesL, 1)
+        table.remove(self.trailLinesL, 1)
+        table.remove(self.trailLinesR, 1)
+        table.remove(self.trailLinesR, 1)
     end
     
-    table.insert(self.trailLines, mouseX)
-    table.insert(self.trailLines, mouseY)
+    table.insert(self.trailLinesL, self.mouseX - 3)
+    table.insert(self.trailLinesL, self.mouseY)
+    
+    table.insert(self.trailLinesR, self.mouseX + 3)
+    table.insert(self.trailLinesR, self.mouseY)
     
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.draw(
         Tileset,
         tPlayer,
-        mouseX,
-        mouseY,
+        self.mouseX,
+        self.mouseY,
         -self.angle,
         1,
         1,
@@ -67,7 +91,7 @@ function Player:draw(speed)
         size/2
     )
     
-    self.previousMouseX, self.previousMouseY = mouseX, mouseY
+    self.previousMouseX, self.previousMouseY = self.mouseX, self.mouseY
 end
 
 
@@ -79,8 +103,7 @@ function Player:updateSprite()
         self.angle = 0.0
     end
 
-    local mouseX = love.mouse.getX()/PixelRatio
-    local relativeX = mouseX - self.previousMouseX
+    local relativeX = self.mouseX - self.previousMouseX
     
     if math.abs(relativeX) >= 0.5 then
         self.angleTarget = relativeX / playerRotationDamp * PixelRatio
