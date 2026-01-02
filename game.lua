@@ -13,8 +13,6 @@ local obstacleSpawnInterval = 0.5
 local chancePickup = 2
 local chanceObstacle = 100
 
-local obstacles = {}
-
 local hud
 
 
@@ -28,6 +26,7 @@ function Game:new()
     self.bgPos = 0.0
     self.speed = 1.0
     self.spawnCooldown = obstacleSpawnInterval
+    self.obstacles = {}
 
     self.score = 100
 end
@@ -52,7 +51,7 @@ function Game:update(dt)
         self.speed = 1.0
     end
 
-    for _, obstacle in ipairs(obstacles) do
+    for _, obstacle in ipairs(self.obstacles) do
         obstacle:update(baseSpeed * (self.speed/60.0))
     end
 
@@ -82,7 +81,7 @@ function Game:draw()
         0, self.bgPos + bgHeight
     )
 
-    for _, obstacle in ipairs(obstacles) do
+    for _, obstacle in ipairs(self.obstacles) do
         obstacle:draw()
     end
 
@@ -98,19 +97,19 @@ end
 
 
 function Game:spawnObstacle()
-    local obstacle = Obstacle()
-    table.insert(obstacles, obstacle)
+    local obstacle = Obstacle(self)
+    table.insert(self.obstacles, obstacle)
 end
 
 
 function Game:checkCollision()
-    if #obstacles < 1 then
+    if #self.obstacles < 1 then
         return
     end
 
     local playerCollider = player.collider
 
-    for _, obstacle in ipairs(obstacles) do
+    for _, obstacle in ipairs(self.obstacles) do
         local obstacleCollider = obstacle.collider
         
         local a_left = playerCollider[1]
