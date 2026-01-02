@@ -1,6 +1,6 @@
 Button = Object:extend()
 
-local font = love.graphics.newFont("assets/DigitalDiscoOutline.ttf", 16)
+Font = love.graphics.newFont("assets/DigitalDiscoOutline.ttf", 16)
 
 local rigidness = 0.1
 local damping = 0.2
@@ -18,7 +18,7 @@ function Button:new(_x, _y, _buttonValues, _animOffset, _camera)
     self.camera = _camera
     self.callFunction = _buttonValues[2]
 
-    local newText = love.graphics.newText(font, {{0, 0, 0}, _buttonValues[1]})
+    local newText = love.graphics.newText(Font, {{0, 0, 0}, _buttonValues[1]})
     self.text = newText
 
     self.w = self.text:getWidth()

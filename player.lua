@@ -3,6 +3,7 @@ Player = Object:extend()
 local size = 16
 local tPlayer = love.graphics.newQuad(160, 80, size, size, Tileset)
 local playerRotationDamp = 30.0 -- mouse relative x pixels per frame / this value
+local health = 3
 
 
 function Player:new()
@@ -18,6 +19,7 @@ function Player:new()
     self.collider = {0, 0, size, size}
     self.mouseX = 0.0
     self.mouseY = 0.0
+    self.health = health
 
     love.graphics.setLineWidth(4)
     love.graphics.setLineStyle("smooth")

@@ -15,15 +15,21 @@ local chanceObstacle = 100
 
 local obstacles = {}
 
+local hud
+
 
 function Game:new()
     require "player"
     require "obstacle"
+    require "game_hud"
     player = Player()
+    hud = HUD()
     
     self.bgPos = 0.0
     self.speed = 1.0
     self.spawnCooldown = obstacleSpawnInterval
+
+    self.score = 100
 end
 
 
@@ -54,7 +60,7 @@ function Game:update(dt)
         S:changeScene("menu")
     end
 
-
+    self.score = self.score + 1
     player:update(dt)
 end
 
@@ -81,6 +87,7 @@ function Game:draw()
     end
 
     player:draw(baseSpeed * (self.speed/60.0))
+    hud:draw(self.score)
 end
 
 
