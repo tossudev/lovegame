@@ -52,7 +52,7 @@ end
 
 function Menu:createButtons()
     local buttonTexts = {
-        {"the game", nil},
+        {"LOVESKI", nil},
         {"Play", self.pressedPlay},
         {"Quit", self.pressedQuit},
     }

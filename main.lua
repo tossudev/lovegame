@@ -2,9 +2,9 @@ local camera
 local sceneManager
 
 GameWidth, GameHeight = 320, 180 --fixed game resolution
-local windowWidth, windowHeight = love.window.getDesktopDimensions()
-windowWidth, windowHeight = windowWidth*.7, windowHeight*.7 --make the window a bit smaller than the screen itself
-PixelRatio = windowWidth/GameWidth
+local windowWidth, windowHeight = 1280, 720
+local push = require "lib.push"
+
 PI = 3.14159
 
 
@@ -12,11 +12,19 @@ function love.load()
     Object = require "lib.classic"
     require "scene_manager"
 
-    love.graphics.setDefaultFilter("nearest", "nearest", 1)
+    love.graphics.setDefaultFilter("nearest", "nearest")
     love.graphics.setLineStyle("rough")
-    love.window.setMode(windowWidth, windowHeight)
+	love.window.setTitle("LOVESKI")
 
-    sceneManager = SceneManager()
+	love.window.setMode(1280, 720, {resizable=true})
+
+	push.setupScreen(
+		GameWidth,
+		GameHeight,
+		{upscale="normal"}
+	)
+    
+	sceneManager = SceneManager()
 end
 
 
@@ -26,8 +34,9 @@ end
 
 
 function love.draw()
-    love.graphics.scale(PixelRatio, PixelRatio)
+	push.start()
     sceneManager:draw()
+	push.finish()
 end
 
 
@@ -39,3 +48,10 @@ end
 function love.mousereleased()
     sceneManager:mousereleased()
 end
+
+
+function love.resize(w, h)
+	return push.resize(w, h)
+end
+
+

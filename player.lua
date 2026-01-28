@@ -1,12 +1,13 @@
 Player = Object:extend()
 
+local push = require "lib.push"
 local size = 16
 local tPlayer = love.graphics.newQuad(160, 80, size, size, Tileset)
-local playerRotationDamp = 30.0 -- mouse relative x pixels per frame / this value
+local playerRotationDamp = 10.0
 local health = 3
 
 
-function Player:new()
+function Player:new(gameClass)
     require "lib/math"
 
     self.previousMouseX = 0.0
@@ -20,6 +21,7 @@ function Player:new()
     self.mouseX = 0.0
     self.mouseY = 0.0
     self.health = health
+    self.game = gameClass
 
     love.graphics.setLineWidth(4)
     love.graphics.setLineStyle("smooth")
@@ -27,9 +29,12 @@ end
 
 
 function Player:update(dt)
-    self.mouseX = love.mouse.getX()/PixelRatio
-    self.mouseY = love.mouse.getY()/PixelRatio
-    self.collider[1] = self.mouseX - size/2
+	self.mouseX, self.mouseY = push.toGame(love.mouse.getX(), love.mouse.getY())
+	if not mouseX or not mouseY then
+		mouseX, mouseY = -1, -1
+	end   
+	
+	self.collider[1] = self.mouseX - size/2
     self.collider[2] = self.mouseY - size/2
 
     self.trailHue = self.trailHue + dt
@@ -108,10 +113,19 @@ function Player:updateSprite()
     local relativeX = self.mouseX - self.previousMouseX
     
     if math.abs(relativeX) >= 0.5 then
-        self.angleTarget = relativeX / playerRotationDamp * PixelRatio
+        self.angleTarget = relativeX / playerRotationDamp
     else
         self.angleTarget = 0.0
     end
 
     self.angle = Lerp(self.angle, self.angleTarget, 0.5)
+end
+
+
+function Player:takeDamage()
+    health = health - 1
+
+    -- if health <= 0 then
+    --     self.game.endGame()
+    -- end
 end

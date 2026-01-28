@@ -20,7 +20,7 @@ function Game:new()
     require "player"
     require "obstacle"
     require "game_hud"
-    player = Player()
+    player = Player(self)
     hud = HUD()
     
     self.bgPos = 0.0
@@ -29,14 +29,19 @@ function Game:new()
     self.obstacles = {}
 
     self.score = 100
+    self.gameOver = false
 end
 
 
 function Game:update(dt)
-    if self:checkCollision() then
-        S:changeScene("menu")
+    if self.gameOver then
+        self.speed = Lerp(self.speed, 0.0 ,0.5)
+        return
     end
 
+    if self:checkCollision() then
+        player.takeDamage()
+    end
 
     self.spawnCooldown = self.spawnCooldown - dt
 
@@ -131,4 +136,9 @@ function Game:checkCollision()
     end
 
     return false
+end
+
+
+function Game:endGame()
+    self.gameOver = true
 end

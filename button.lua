@@ -2,6 +2,7 @@ Button = Object:extend()
 
 Font = love.graphics.newFont("assets/DigitalDiscoOutline.ttf", 16)
 
+local push = require "lib.push"
 local rigidness = 0.1
 local damping = 0.2
 
@@ -97,14 +98,16 @@ end
 
 
 function Button:isMouseOnButton()
-    -- returns scaled pixels
-    local mousePosX, mousePosY = love.mouse.getX(), love.mouse.getY()
+	local mouseX, mouseY = push.toGame(love.mouse.getX(), love.mouse.getY())
+	if not mouseX or not mouseY then
+		mouseX, mouseY = -1, -1
+	end 
+ 
+	local offset_x = (self.x - (self.w/2.0))
+    local offset_y = (self.y - (self.h/2.0))
 
-    local offset_x = (self.x - (self.w/2.0))*PixelRatio
-    local offset_y = (self.y - (self.h/2.0))*PixelRatio
-
-    return mousePosX >= offset_x
-    and mousePosX < offset_x + self.w*PixelRatio
-    and mousePosY >= offset_y
-    and mousePosY < offset_y + self.h*PixelRatio
+    return mouseX >= offset_x
+    and mouseX < offset_x + self.w
+	and mouseY >= offset_y
+    and mouseY < offset_y + self.h
 end
