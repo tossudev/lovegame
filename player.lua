@@ -9,6 +9,7 @@ local health = 3
 
 function Player:new(gameClass)
     require "lib/math"
+	require "audio"
 
     self.previousMouseX = 0.0
     self.previousMouseY = 0.0
@@ -30,8 +31,8 @@ end
 
 function Player:update(dt)
 	self.mouseX, self.mouseY = push.toGame(love.mouse.getX(), love.mouse.getY())
-	if not mouseX or not mouseY then
-		mouseX, mouseY = -1, -1
+	if not self.mouseX or not self.mouseY then
+		self.mouseX, self.mouseY = -1, -1
 	end   
 	
 	self.collider[1] = self.mouseX - size/2
@@ -111,7 +112,11 @@ function Player:updateSprite()
     end
 
     local relativeX = self.mouseX - self.previousMouseX
-    
+
+	if math.abs(relativeX) >= 40 then
+		Audio:playSound("swerve")
+	end
+ 
     if math.abs(relativeX) >= 0.5 then
         self.angleTarget = relativeX / playerRotationDamp
     else
@@ -123,7 +128,8 @@ end
 
 
 function Player:takeDamage()
-    health = health - 1
+	health = health - 1
+	Audio:playSound("damage")
 
     -- if health <= 0 then
     --     self.game.endGame()

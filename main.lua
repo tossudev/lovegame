@@ -11,6 +11,7 @@ PI = 3.14159
 function love.load()
     Object = require "lib.classic"
     require "scene_manager"
+	require "audio"
 
     love.graphics.setDefaultFilter("nearest", "nearest")
     love.graphics.setLineStyle("rough")
@@ -25,6 +26,7 @@ function love.load()
 	)
     
 	sceneManager = SceneManager()
+	Audio()
 end
 
 

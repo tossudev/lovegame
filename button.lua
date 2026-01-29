@@ -1,4 +1,5 @@
 Button = Object:extend()
+require "audio"
 
 Font = love.graphics.newFont("assets/DigitalDiscoOutline.ttf", 16)
 
@@ -67,7 +68,8 @@ end
 
 function Button:mousepressed()
     if self:isMouseOnButton() then
-        self.spring_destination = 0.5
+        Audio:playSound("click_start")
+		self.spring_destination = 0.5
     end
 end
 
@@ -75,6 +77,7 @@ end
 function Button:mousereleased()
     if self:isMouseOnButton() then
         self.camera:shake()
+        Audio:playSound("click_end")
         -- print("Pressed Button!")
 
         -- idk this seems a little scuffed but it works
