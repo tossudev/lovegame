@@ -1,6 +1,6 @@
 Audio = Object:extend()
 
-local song = love.audio.newSource("assets/sound/song.mp3", "stream")
+local song = love.audio.newSource("assets/sound/song.ogg", "stream")
 
 local sSwerve = love.audio.newSource("assets/sound/swerve.wav", "static")
 local sClickStart = love.audio.newSource("assets/sound/click_start.wav", "static")
