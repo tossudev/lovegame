@@ -6,6 +6,6 @@ function HUD:new()
 end
 
 function HUD:draw(score)
-    self.tScore:set({{0, 0, 0}, score})
+    self.tScore:set({{0, 0, 0}, string.format("%d", score)})
     love.graphics.draw(self.tScore, GameWidth / 2 - self.tScore:getWidth() / 2, 0)
 end

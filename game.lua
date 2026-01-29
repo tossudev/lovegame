@@ -6,7 +6,7 @@ local tBackgroundTop = love.graphics.newImage("assets/textures/background.png")
 local tBackgroundBottom = love.graphics.newImage("assets/textures/background.png")
 
 local player
-local speedScale = 0.5 -- speed multiplier per second
+local speedScale = 0.05 -- speed multiplier per second
 local baseSpeed = 64.0 -- pixels per second
 local obstacleSpawnInterval = 0.5
 
@@ -35,7 +35,7 @@ end
 
 function Game:update(dt)
     if self.gameOver then
-        self.speed = Lerp(self.speed, 0.0 ,0.5)
+        self.speed = Lerp(self.speed, 0.0, 30.0*dt)
         return
     end
 
@@ -53,7 +53,7 @@ function Game:update(dt)
     if love.mouse.isDown(1) then
         self.speed = self.speed + (speedScale*dt)
     else
-        self.speed = 1.0
+        self.speed = 60.0 * dt
     end
 
     for _, obstacle in ipairs(self.obstacles) do
@@ -64,7 +64,7 @@ function Game:update(dt)
         S:changeScene("menu")
     end
 
-    self.score = self.score + 1
+    self.score = self.score + 60.0 * dt
     player:update(dt)
 end
 

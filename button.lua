@@ -1,7 +1,6 @@
 Button = Object:extend()
 require "audio"
 
-Font = love.graphics.newFont("assets/DigitalDiscoOutline.ttf", 16)
 
 local push = require "lib.push"
 local rigidness = 0.1

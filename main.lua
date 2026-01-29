@@ -6,6 +6,13 @@ local windowWidth, windowHeight = 1280, 720
 local push = require "lib.push"
 
 PI = 3.14159
+Font = nil
+FontLexend = love.graphics.newFont("assets/Lexend.ttf", 16)
+
+local debugText = "Powerski made with Löve2D\nAssets by kenney\nMusic by korewakosu"
+local footer = love.graphics.newText(
+	FontLexend, {{0, 0, 0}, debugText}	
+)
 
 
 function love.load()
@@ -17,13 +24,15 @@ function love.load()
     love.graphics.setLineStyle("rough")
 	love.window.setTitle("LOVESKI")
 
-	love.window.setMode(1280, 720, {resizable=true})
+	love.window.setMode(1280, 720, {resizable=true, vsync=true})
 
 	push.setupScreen(
 		GameWidth,
 		GameHeight,
 		{upscale="normal"}
 	)
+	
+	Font = love.graphics.newFont("assets/DigitalDiscoOutline.ttf", 16)
     
 	sceneManager = SceneManager()
 	Audio()
@@ -39,6 +48,11 @@ function love.draw()
 	push.start()
     sceneManager:draw()
 	push.finish()
+
+	local text = string.format("%s\n\nFPS: %s", debugText, tostring(love.timer.getFPS()))
+	footer:setf({{0, 0, 0}, text}, 9999, "left")
+
+	love.graphics.draw(footer)
 end
 
 
